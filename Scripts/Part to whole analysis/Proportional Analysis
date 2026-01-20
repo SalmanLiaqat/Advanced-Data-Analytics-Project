@@ -1,0 +1,29 @@
+
+
+--Part to whole analysis--proportional analysis
+--analyze how an individual category part is performaing compared to the overall, allowing us
+--which category has the greatest impact on the business.
+
+-- ([measure]/[total measure] * 100 BY [Dimension]
+--(sales/total sales) * 100 by category
+--(quantity/total quantity) * 100 by country
+
+
+--which category contributes to the over all performance
+
+WITH category_sales AS (
+SELECT
+category,
+SUM(sales_amount) total_Sales
+FROM gold.fact_sales f
+LEFT JOIN gold.dim_products p
+ON p.product_key = f.product_key
+GROUP BY category)
+
+SELECT 
+category,
+total_Sales,
+SUM(total_sales) OVER () overall_sales,
+CONCAT(ROUND((CAST(total_sales AS FLOAT) / SUM(total_Sales) OVER())*100,2), '%') AS percentage_of_total
+FROM category_sales
+
