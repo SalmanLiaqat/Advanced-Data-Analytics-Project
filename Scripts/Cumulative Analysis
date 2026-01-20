@@ -1,0 +1,25 @@
+
+--Cumulative Analysis--
+
+--Aggregate the data  progressively over time
+
+--Calculate the total sales per month
+--and running total of sales ove rtime
+
+
+
+SELECT
+order_date,
+total_sales,
+SUM(total_sales) OVER (PARTITION BY order_date ORDER BY order_date) as running_total_sales,
+AVG(avrg_price) OVER(ORDER BY order_date) AS moving_avrg_price
+FROM(
+SELECT
+--can use DATETRUNC Function here
+CAST(order_date AS DATE) AS order_date,
+SUM(sales_amount) AS total_sales,
+AVG(price) AS avrg_price
+FROM gold.fact_sales
+WHERE order_date IS NOT NULL
+GROUP BY CAST(order_date AS DATE)
+)t
