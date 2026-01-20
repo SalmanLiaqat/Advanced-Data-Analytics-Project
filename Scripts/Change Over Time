@@ -1,0 +1,40 @@
+
+--Change Over Time--
+
+--Analyze how a measure evolves over time--
+--Helps track trends and identify seasonality in the data--
+
+
+--option 1
+SELECT
+YEAR(order_date) AS order_year,
+SUM(Sales_amount) AS total_sales,
+COUNT(DISTINCT customer_key) as total_customer,
+SUM(quantity) as total_quantity
+FROM gold.fact_sales
+WHERE order_date IS NOT NULL
+GROUP BY year(order_date)
+ORDER BY year(order_date)
+
+--Option 2
+SELECT
+FORMAT(order_date, 'yyyy-MMM') as order_date,
+SUM(Sales_amount) AS total_sales,
+COUNT(DISTINCT customer_key) as total_customer,
+SUM(quantity) as total_quantity
+FROM gold.fact_sales
+WHERE order_date IS NOT NULL
+GROUP BY FORMAT(order_date, 'yyyy-MMM') 
+ORDER BY FORMAT(order_date, 'yyyy-MMM') 
+
+
+--option 3
+SELECT
+DATETRUNC(month, order_date) as order_date,
+SUM(Sales_amount) AS total_sales,
+COUNT(DISTINCT customer_key) as total_customer,
+SUM(quantity) as total_quantity
+FROM gold.fact_sales
+WHERE order_date IS NOT NULL
+GROUP BY DATETRUNC(month, order_date)
+ORDER BY DATETRUNC(month, order_date)
